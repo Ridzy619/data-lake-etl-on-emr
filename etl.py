@@ -14,6 +14,12 @@ os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
 
 
 def create_spark_session():
+    '''
+    Create a spark connection that includes hadoop packages
+    
+    return:
+        spark instance
+    '''
     spark = SparkSession \
         .builder \
         .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
@@ -22,6 +28,9 @@ def create_spark_session():
 
 
 def process_song_data(spark, input_data, output_data):
+    '''
+    Process and save song data as new tables in parquet format
+    '''
     # get filepath to song data file
     song_data = input_data + '/song_data'
     
@@ -42,6 +51,9 @@ def process_song_data(spark, input_data, output_data):
     
     
 def process_log_data(spark, input_data, output_data):
+    '''
+    Process and save song data as new tables in parquet format
+    '''
     from pyspark.sql import functions as F
     from pyspark.sql import types as T
     # get filepath to log data file
@@ -110,12 +122,17 @@ def process_log_data(spark, input_data, output_data):
 
 
 def main():
+    '''
+    Run process_song_data and process_log_data functions
+    '''
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
-    output_data = "s3a://uda-spark-data/data"
+    output_data = "s3a://uda-spark-data/data/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
+    
+    spark.stop()
 
 
 if __name__ == "__main__":
